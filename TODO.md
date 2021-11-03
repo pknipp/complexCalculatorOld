@@ -26,7 +26,7 @@ binary operations:
 How to parse string:
 Remove all spaces
 ops = [+-*/^]
-parse string(stri_in):
+def parse(stri_in):
     remove any leading "+"
     stri = stri_in
     pairs = []
@@ -51,9 +51,17 @@ parse string(stri_in):
 
     def trim_number(stri):
         char = 1st item trimmed from stri
-        etc
+        if char == "(":
+            start a stack of open/close parens, as follows:
+                if next char is something other than a paren:
+                    pass
+                else
+                    if next item is an open paren:
+                        put it on stack
+                    else
+                        remove last item on stack
+            return recursive call to parse, for contents of ()
+        build up #, one char at a time
 
     def trim_op(stri):
-        char = 1st item trimmed from stri
-        index = ops.indexOf(char)
-        return index
+        return ops.indexOf(1st item trimmed from stri)
