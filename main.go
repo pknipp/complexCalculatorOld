@@ -3,15 +3,20 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	// "unicode"
 )
 
 func main() {
-	expression := "2.3+4*5"
+	strin := " +2.3 + 4 * 5 "
+	strin = strings.ReplaceAll(strin, " ", "")
+	if strin[0:1] == "+" {
+		strin = strin[1:]
+	}
+	expression := strings.Split(strin, "")
 	z := ""
-	zTemp := z
-	for true {
-		zTemp = z + expression[0:1]
+	for {
+		zTemp := z + expression[0]
 		fmt.Println(zTemp, expression)
 		if !(zTemp == "." || zTemp == "-" || zTemp == "-.") {
 			_, err := strconv.ParseFloat(zTemp, 64)
@@ -22,9 +27,8 @@ func main() {
 		expression = expression[1:]
 		z = zTemp
 	}
-	//
-	// fmt.Println(unicode.IsNumber('2.'))
-	// fmt.Println(expression[0])
-	// fmt.Println(isANumber)
 	fmt.Println(z, expression)
+	// for len(expression) > 0 {
+		// op :=
+	// }
 }

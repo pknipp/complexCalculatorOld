@@ -24,10 +24,8 @@ binary operations:
     z1 ** n = ...
 
 How to parse string:
-Remove all spaces
-ops = [+-*/^]
+ops = "+-*/^"
 def parse(stri_in):
-    remove any leading "+"
     stri = stri_in
     pairs = []
     z = stuff trimmed off stri, which equals either # or unary op or ()
