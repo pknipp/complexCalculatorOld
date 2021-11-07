@@ -19,8 +19,6 @@ func getNumber(expression string) (string, string){
 			}
 		}
 		p++
-		// expression = expression[1:]
-		// z = zTemp
 	}
 	return expression[0:p - 1], expression[p - 1:]
 }
