@@ -4,24 +4,25 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	// "unicode"
 )
 
 func getNumber(expression string) (string, string){
+	p := 1
 	z := ""
-	for len(expression) > 0 {
-		zTemp := z + expression[0:1]
-		// fmt.Println(zTemp, expression)
-		if !(zTemp == "." || zTemp == "-" || zTemp == "-.") {
-			_, err := strconv.ParseFloat(zTemp, 64)
+	for len(expression) >= p {
+		z = expression[0:p]
+		// fmt.Println(z, expression[p:])
+		if !(z == "." || z == "-" || z == "-.") {
+			_, err := strconv.ParseFloat(z, 64)
 			if err != nil {
 				break
 			}
 		}
-		expression = expression[1:]
-		z = zTemp
+		p++
+		// expression = expression[1:]
+		// z = zTemp
 	}
-	return z, expression
+	return expression[0:p - 1], expression[p - 1:]
 }
 
 func main() {
@@ -37,7 +38,7 @@ func main() {
 
 	pairs := make([]map[string]string, 0)
 	val := ""
-	for len(expression) > 0 {
+	for len(expression) > 1 {
 		op := expression[0:1]
 		val, expression = getNumber(expression[1:])
 		pair := map[string]string {"op": op, "val": val}
