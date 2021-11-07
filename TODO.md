@@ -31,10 +31,6 @@ def parse(stri_in):
     z = stuff trimmed off stri, which equals either # or unary op or ()
     //unary arg is evaluated recursively, and then unary is evaluated
     // () is evaluated recursively
-    while stri:
-        op = trim off operation, which is either +, -, *, /, or ^
-        # = trim off next # (as above)
-        pairs.append({op, #})
 
     while len(ops) > 1:
         if ops.indexOf(pairs[0].op) < ops.indexOf(pairs[1].op):
