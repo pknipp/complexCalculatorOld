@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"math"
 )
 
 func getNumber(expression string) (float64, string){
@@ -12,7 +13,6 @@ func getNumber(expression string) (float64, string){
 	// err := nil
 	for len(expression) >= p {
 		z := expression[0:p]
-		// fmt.Println(z, expression[p:])
 		if !(z == "." || z == "-" || z == "-.") {
 			num, err := strconv.ParseFloat(z, 64)
 			if err != nil {
@@ -25,55 +25,70 @@ func getNumber(expression string) (float64, string){
 	return lastNum, expression[p - 1:]
 }
 
-// func calculate(x1 string, op string, x2 string) float64 {
-//
-// }
+func calculate(x1 float64, op string, x2 float64) float64 {
+	result := 0.
+	switch op {
+	case "+":
+		result = x1 + x2
+	case "-":
+		result = x1 - x2
+	case "*":
+		result = x1 * x2
+	case "/":
+		result = x1 / x2
+	case "^":
+		result = math.Pow(x1, x2)
+	}
+	return result
+}
 
 func main() {
 	type opNum struct {
 		op string
 		num float64
 	}
-	expression := " +2.3 / 78 + 4. - 60 * .5 "
+	expression := " +23. / 78 ^ 2 + 4. * 6. - .5 "
 	expression = strings.ReplaceAll(expression, " ", "")
 	if expression[0:1] == "+" {
 		expression = expression[1:]
 	}
 	z := 0.
 	z, expression = getNumber(expression)
-	// fmt.Println(z, expression)
-	// precedence := map[string]int{"+": 0, "-": 0, "*": 1, "/": 1, "^": 2}
-
-	// pairs := make([]map[string]string, 0)
+	precedence := map[string]int{"+": 0, "-": 0, "*": 1, "/": 1, "^": 2}
 	pairs := []opNum{}
 	num := 0.
 	for len(expression) > 1 {
 		op := expression[0:1]
 		num, expression = getNumber(expression[1:])
-		// pair := map[string]string {"op": op, "val": val}
 		pair := opNum{op, num}
-		// fmt.Println(pair)
 		pairs = append(pairs, pair)
-		fmt.Println(pairs, expression)
 	}
-	fmt.Println(z, pairs)
-	// while len(pairs) > 1 {
-	// 	index := 0
-	// 	while len(pairs) > index {
-	// 		if precedence[pairs[index].op] < precedence[pairs[index + 1].op] {
-	// 			index++
-	// 		} else {
-	// 			if index == 0 {
-	// 				x1 := z
-	// 			} else {
-	// 				x1 := pairs[index].val
-	// 			}
-	// 			result := calculate(x1, pairs[index].op, pairs[index].val)
-	// 		}
-	// 	}
-	// 	// 		replace z or val property of element with result
-
-
-	// 	if precedence[pairs[0].op] <
-	// }
+	for len(pairs) > 1 {
+		fmt.Println(z, pairs)
+		index := 0
+		for len(pairs) > index {
+			fmt.Println(index, z, pairs)
+			if index < len(pairs) - 1 && precedence[pairs[index].op] < precedence[pairs[index + 1].op] {
+				index++
+			} else {
+				x1 := 0.
+				if index == 0 {
+					x1 = z
+				} else {
+					x1 = pairs[index - 1].num
+				}
+				fmt.Println(x1, pairs[index].op, pairs[index].num)
+				result := calculate(x1, pairs[index].op, pairs[index].num)
+				fmt.Println(result)
+				if index == 0 {
+					z = result
+					pairs = pairs[1:]
+				} else {
+					pairs[index - 1].num = result
+					pairs = append(pairs[0: index], pairs[index + 1:]...)
+				}
+				index = 0
+			}
+		}
+	}
 }
