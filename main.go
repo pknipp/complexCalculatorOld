@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"math/cmplx"
 	// "math"
 )
 
@@ -20,8 +21,8 @@ func calculate(z1 complex128, op string, z2 complex128) complex128 {
 		result = z1 * z2
 	case "/":
 		result = z1 / z2
-	// case "^":
-		// result = math.Pow(z1, z2)
+	case "^":
+		result = cmplx.Pow(z1, z2)
 	}
 	return result
 }
@@ -77,8 +78,8 @@ func parseExpression (expression string) (complex128) {
 	}
 	z := complex(0., 0.)
 	z, expression = getNumber(expression)
-	precedence := map[string]int{"+": 0, "-": 0, "*": 1, "/": 1}//, "^": 2}
-	ops := "+-*/"//^"
+	precedence := map[string]int{"+": 0, "-": 0, "*": 1, "/": 1, "^": 2}
+	ops := "+-*^"
 	pairs := []opNum{}
 	num := complex(0., 0.)
 	for len(expression) > 0 {
@@ -120,6 +121,6 @@ func parseExpression (expression string) (complex128) {
 }
 
 func main() {
-	var expression string = "(1 + 2j)/(3+4i)"
+	var expression string = "(-3)^(3 - i)"
 	fmt.Println(parseExpression(expression));
 }
