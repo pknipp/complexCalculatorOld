@@ -47,7 +47,12 @@ func parseExpression (expression string) (float64) {
 			lastNum := 0.
 			for len(expression) >= p {
 				z := expression[0:p]
-				if !(z == "." || z == "-" || z == "-.") {
+				// If implied multiplication is detected ...
+				if expression[p - 1: p] == "(" {
+					// ... insert a "*" symbol.
+					expression = expression[0:p - 1] + "*" + expression[p - 1:]
+					break
+				} else if !(z == "." || z == "-" || z == "-.") {
 					num, err := strconv.ParseFloat(z, 64)
 					if err != nil {
 						break
@@ -107,6 +112,6 @@ func parseExpression (expression string) (float64) {
 }
 
 func main() {
-	var expression string = " +23. / (7/(3/5)+8) ^ (2/3) + 4 * 6 "
+	var expression string = "2(3+4)/2^(3(2/5))+2"
 	fmt.Println(parseExpression(expression));
 }

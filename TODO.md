@@ -1,5 +1,3 @@
-ENABLE IMPLIED MULTIPLICATION
-
 phase, polar, rect, exp, log, log, & trig [3 * 2 (direct vs inv) * 2 (circ vs hyperbolic)]
 
 create class which has 4 properties: real, imag, mod, phase
