@@ -7,23 +7,7 @@ import (
 	"math"
 )
 
-func getNumber(expression string) (float64, string){
-	p := 1
-	lastNum := 0.
-	// err := nil
-	for len(expression) >= p {
-		z := expression[0:p]
-		if !(z == "." || z == "-" || z == "-.") {
-			num, err := strconv.ParseFloat(z, 64)
-			if err != nil {
-				break
-			}
-			lastNum = num
-		}
-		p++
-	}
-	return lastNum, expression[p - 1:]
-}
+
 
 func calculate(x1 float64, op string, x2 float64) float64 {
 	result := 0.
@@ -42,12 +26,44 @@ func calculate(x1 float64, op string, x2 float64) float64 {
 	return result
 }
 
-func main() {
+func parseExpression (expression string) (float64) {
+	getNumber := func(expression string) (float64, string){
+		leadingChar := expression[0:1]
+		if leadingChar == "(" {
+			nExpression := 0
+			nParen := 1
+			for nParen > 0 {
+				nExpression++
+				nextChar := expression[nExpression: nExpression + 1]
+				if nextChar == "(" {
+					nParen++
+				} else if nextChar == ")" {
+					nParen--
+				}
+			}
+			return parseExpression(expression[1: nExpression]), expression[nExpression + 1:]
+		} else {
+			p := 1
+			lastNum := 0.
+			for len(expression) >= p {
+				z := expression[0:p]
+				if !(z == "." || z == "-" || z == "-.") {
+					num, err := strconv.ParseFloat(z, 64)
+					if err != nil {
+						break
+					}
+					lastNum = num
+				}
+				p++
+			}
+			return lastNum, expression[p - 1:]
+		}
+	}
 	type opNum struct {
 		op string
 		num float64
 	}
-	expression := " +23. / 78 ^ 2 + 4. * 6. - .5 "
+
 	expression = strings.ReplaceAll(expression, " ", "")
 	if expression[0:1] == "+" {
 		expression = expression[1:]
@@ -64,10 +80,8 @@ func main() {
 		pairs = append(pairs, pair)
 	}
 	for len(pairs) > 0 {
-		// fmt.Println(z, pairs)
 		index := 0
 		for len(pairs) > index {
-			// fmt.Println(index, z, pairs)
 			if index < len(pairs) - 1 && precedence[pairs[index].op] < precedence[pairs[index + 1].op] {
 				index++
 			} else {
@@ -77,9 +91,7 @@ func main() {
 				} else {
 					x1 = pairs[index - 1].num
 				}
-				// fmt.Println(x1, pairs[index].op, pairs[index].num)
 				result := calculate(x1, pairs[index].op, pairs[index].num)
-				// fmt.Println(result)
 				if index == 0 {
 					z = result
 					pairs = pairs[1:]
@@ -92,5 +104,10 @@ func main() {
 			// fmt.Println(index, z, pairs)
 		}
 	}
-	fmt.Println(z)
+	return z
+}
+
+func main() {
+	var expression string = " +23. / (7/(3/5)+8) ^ (2/3) + 4 * 6 "
+	fmt.Println(parseExpression(expression));
 }
