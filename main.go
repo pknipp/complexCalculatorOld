@@ -63,11 +63,11 @@ func main() {
 		pair := opNum{op, num}
 		pairs = append(pairs, pair)
 	}
-	for len(pairs) > 1 {
-		fmt.Println(z, pairs)
+	for len(pairs) > 0 {
+		// fmt.Println(z, pairs)
 		index := 0
 		for len(pairs) > index {
-			fmt.Println(index, z, pairs)
+			// fmt.Println(index, z, pairs)
 			if index < len(pairs) - 1 && precedence[pairs[index].op] < precedence[pairs[index + 1].op] {
 				index++
 			} else {
@@ -77,9 +77,9 @@ func main() {
 				} else {
 					x1 = pairs[index - 1].num
 				}
-				fmt.Println(x1, pairs[index].op, pairs[index].num)
+				// fmt.Println(x1, pairs[index].op, pairs[index].num)
 				result := calculate(x1, pairs[index].op, pairs[index].num)
-				fmt.Println(result)
+				// fmt.Println(result)
 				if index == 0 {
 					z = result
 					pairs = pairs[1:]
@@ -89,6 +89,8 @@ func main() {
 				}
 				index = 0
 			}
+			// fmt.Println(index, z, pairs)
 		}
 	}
+	fmt.Println(z)
 }
