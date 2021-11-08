@@ -76,11 +76,17 @@ func parseExpression (expression string) (float64) {
 	z := 0.
 	z, expression = getNumber(expression)
 	precedence := map[string]int{"+": 0, "-": 0, "*": 1, "/": 1, "^": 2}
+	ops := "+-*/^"
 	pairs := []opNum{}
 	num := 0.
-	for len(expression) > 1 {
+	for len(expression) > 0 {
 		op := expression[0:1]
-		num, expression = getNumber(expression[1:])
+		if strings.Contains(ops, op) {
+			expression = expression[1:]
+		} else {
+			op = "*"
+		}
+		num, expression = getNumber(expression)
 		pair := opNum{op, num}
 		pairs = append(pairs, pair)
 	}
@@ -112,6 +118,6 @@ func parseExpression (expression string) (float64) {
 }
 
 func main() {
-	var expression string = "2(3+4)/2^(3(2/5))+2"
+	var expression string = "2 + 4*2^3/(2(3+4)5)"
 	fmt.Println(parseExpression(expression));
 }
