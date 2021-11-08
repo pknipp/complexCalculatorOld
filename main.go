@@ -27,7 +27,6 @@ func calculate(x1 float64, op string, x2 float64) float64 {
 }
 
 func parseExpression (expression string) (float64) {
-	// fmt.Println(expression)
 	getNumber := func(expression string) (float64, string){
 		leadingChar := expression[0:1]
 		if leadingChar == "(" {
@@ -42,7 +41,6 @@ func parseExpression (expression string) (float64) {
 					nParen--
 				}
 			}
-			// fmt.Println(expression[1: nExpression], expression[nExpression + 1:])
 			return parseExpression(expression[1: nExpression]), expression[nExpression + 1:]
 		} else {
 			p := 1
@@ -58,7 +56,6 @@ func parseExpression (expression string) (float64) {
 				}
 				p++
 			}
-			// fmt.Println(lastNum, expression[p - 1:])
 			return lastNum, expression[p - 1:]
 		}
 	}
@@ -81,13 +78,10 @@ func parseExpression (expression string) (float64) {
 		num, expression = getNumber(expression[1:])
 		pair := opNum{op, num}
 		pairs = append(pairs, pair)
-		fmt.Println(pairs, expression)
 	}
-	for len(pairs) > 1 {
-		fmt.Println(z, pairs)
+	for len(pairs) > 0 {
 		index := 0
 		for len(pairs) > index {
-			// fmt.Println(index, z, pairs)
 			if index < len(pairs) - 1 && precedence[pairs[index].op] < precedence[pairs[index + 1].op] {
 				index++
 			} else {
@@ -98,7 +92,6 @@ func parseExpression (expression string) (float64) {
 					x1 = pairs[index - 1].num
 				}
 				result := calculate(x1, pairs[index].op, pairs[index].num)
-				// fmt.Println(result)
 				if index == 0 {
 					z = result
 					pairs = pairs[1:]
@@ -114,6 +107,6 @@ func parseExpression (expression string) (float64) {
 }
 
 func main() {
-	var expression string = " +23. / (7+8) ^ 2 + 4. * 6. - .5 "
+	var expression string = " +23. / (7/(3/5)+8) ^ (2/3) + 4 * 6 "
 	fmt.Println(parseExpression(expression));
 }
