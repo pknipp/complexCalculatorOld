@@ -101,7 +101,6 @@ func parseExpression (expression string) (float64) {
 				}
 				index = 0
 			}
-			// fmt.Println(index, z, pairs)
 		}
 	}
 	return z
