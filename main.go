@@ -3,15 +3,12 @@ package main
 import (
 	"fmt"
 	"io"
-	// "log"
 	"math/cmplx"
 	"net/http"
 	"strconv"
 	"strings"
 	// "math"
 )
-
-
 
 func calculate(z1 complex128, op string, z2 complex128) complex128 {
 	result := complex(0., 0.)
@@ -31,9 +28,7 @@ func calculate(z1 complex128, op string, z2 complex128) complex128 {
 }
 
 func parseExpression (expression string) (complex128) {
-	// fmt.Println("line 34 says that expression = ", expression)
 	getNumber := func(expression string) (complex128, string){
-		// fmt.Println("line 36 says that expression = ", expression)
 		leadingChar := expression[0:1]
 		if leadingChar == "(" {
 			nExpression := 0
@@ -49,10 +44,8 @@ func parseExpression (expression string) (complex128) {
 			}
 			return parseExpression(expression[1: nExpression]), expression[nExpression + 1:]
 		} else if leadingChar == "i" || leadingChar == "j" {
-			// fmt.Println("line 52 says that expression = ", expression)
 			return complex(0, 1), expression[1:]
 		} else {
-			// fmt.Println("line 55 says that expression = ", expression)
 			p := 1
 			lastNum := complex(0., 0.)
 			for len(expression) >= p {
@@ -92,7 +85,6 @@ func parseExpression (expression string) (complex128) {
 	for len(expression) > 0 {
 		op := expression[0:1]
 		if strings.Contains(ops, op) {
-			// fmt.Println("line 95")
 			expression = expression[1:]
 		} else {
 			op = "*"
@@ -129,42 +121,52 @@ func parseExpression (expression string) (complex128) {
 }
 
 func main() {
-	// fmt.Println("Starting server on port 8000")
-	// http.HandleFunc("/", handler)
-	// http.ListenAndServe(":8000", nil)
-	var expression string = "1+2i/(3-4j/(5+6j))"
-	fmt.Println(parseExpression(expression));
+	fmt.Println("Starting server on port 8000")
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8000", nil)
 }
 
 func handler(w http.ResponseWriter, r*http.Request) {
-	io.WriteString(w, "Here is the answer: \n")
+	io.WriteString(w, "numerical value of the expression above = ")
 	expression := r.URL.Path
 	if expression != "/favicon.ico" {
 		if len(expression) > 1 {
-			// fmt.Println("line 139")
 			expression = expression[1:]
-			// fmt.Println(expression)
 			result := parseExpression(expression)
-			// fmt.Println(result)
 			realPart := strconv.FormatFloat(real(result), 'f', -1, 64)
-			imagPart := strconv.FormatFloat(imag(result), 'f', -1, 64)
-			resultString := realPart + " + " + imagPart + "i"
+			imagPart := ""
+			// DRY the following with math.abs ASA I figure out how to import it.
+			if imag(result) > 0 {
+				imagPart = strconv.FormatFloat(imag(result), 'f', -1, 64)
+			} else {
+				imagPart = strconv.FormatFloat(imag(-result), 'f', -1, 64)
+			}
+			resultString := ""
+			if real(result) != 0 {
+				resultString += realPart
+			}
+			if real(result) != 0 && imag(result) != 0 {
+				// DRY the following after finding some sort of "sign" function
+				if imag(result) > 0 {
+					resultString += " + "
+				} else {
+					resultString += " - "
+				}
+			}
+			if imag(result) != 0 {
+				if real(result) == 0 && imag(result) < 0 {
+					resultString += " - "
+				}
+				// DRY the following after figuring out how to import math.abs
+				if imag(result) != 1 && imag(result) != -1 {
+					resultString += imagPart
+				}
+				resultString += " i"
+			}
+			if real(result) == 0 && imag(result) == 0 {
+				resultString = "0"
+			}
 			io.WriteString(w, resultString)
 		}
 	}
 }
-
-	// keys, ok := r.URL.Query()["key"]
-	// if !ok || len(keys[0]) < 1 {
-		// log.Println("Url Param 'key' is missing")
-		// return
-	// }
-	// Query()["key"] will return an array of items,
-	// we only want the single item.
-	// key := keys[0]
-	// fmt.Println("line 146")
-	// fmt.Println(key)
-	// result := parseExpression(key)
-	// fmt.Println("line 148")
-	// fmt.Println(result)
-	// log.Println("Value of expression is: " + string(real(result)))
