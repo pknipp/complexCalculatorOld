@@ -121,6 +121,6 @@ func parseExpression (expression string) (complex128) {
 }
 
 func main() {
-	var expression string = "j^i"
+	var expression string = "1+2/(3-4i/(5+6i))"
 	fmt.Println(parseExpression(expression));
 }
