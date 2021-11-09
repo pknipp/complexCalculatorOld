@@ -7,11 +7,12 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"regexp"
 	// "math"
 )
 
 func calculate(z1 complex128, op string, z2 complex128) complex128 {
-	result := complex(0., 0.)
+	var result complex128
 	switch op {
 	case "+":
 		result = z1 + z2
@@ -28,6 +29,9 @@ func calculate(z1 complex128, op string, z2 complex128) complex128 {
 }
 
 func parseExpression (expression string) (complex128) {
+	// m1 := regexp.MustCompile(`\*\*`)
+	// expression = m1.ReplaceAllString(expression, "^")
+	expression = regexp.MustCompile(`\*\*`).ReplaceAllString(expression, "^")
 	getNumber := func(expression string) (complex128, string){
 		leadingChar := expression[0:1]
 		if leadingChar == "(" {
@@ -47,7 +51,7 @@ func parseExpression (expression string) (complex128) {
 			return complex(0, 1), expression[1:]
 		} else {
 			p := 1
-			lastNum := complex(0., 0.)
+			var lastNum complex128
 			for len(expression) >= p {
 				z := expression[0:p]
 				// If implied multiplication is detected ...
@@ -76,12 +80,12 @@ func parseExpression (expression string) (complex128) {
 	if expression[0:1] == "+" {
 		expression = expression[1:]
 	}
-	z := complex(0., 0.)
+	var z complex128
 	z, expression = getNumber(expression)
 	precedence := map[string]int{"+": 0, "-": 0, "*": 1, "/": 1, "^": 2}
 	ops := "+-*/^"
 	pairs := []opNum{}
-	num := complex(0., 0.)
+	var num complex128
 	for len(expression) > 0 {
 		op := expression[0:1]
 		if strings.Contains(ops, op) {
@@ -99,7 +103,7 @@ func parseExpression (expression string) (complex128) {
 			if index < len(pairs) - 1 && precedence[pairs[index].op] < precedence[pairs[index + 1].op] {
 				index++
 			} else {
-				z1 := complex(0., 0.)
+				var z1 complex128
 				if index == 0 {
 					z1 = z
 				} else {
@@ -113,6 +117,7 @@ func parseExpression (expression string) (complex128) {
 					pairs[index - 1].num = result
 					pairs = append(pairs[0: index], pairs[index + 1:]...)
 				}
+				// Start another loop thru the expression, ISO high-precedence operations.
 				index = 0
 			}
 		}
