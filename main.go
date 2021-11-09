@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"io"
+	// "log"
+	"math/cmplx"
+	"net/http"
 	"strconv"
 	"strings"
-	"math/cmplx"
 	// "math"
 )
 
@@ -28,6 +31,7 @@ func calculate(z1 complex128, op string, z2 complex128) complex128 {
 }
 
 func parseExpression (expression string) (complex128) {
+	fmt.Println("line 34")
 	getNumber := func(expression string) (complex128, string){
 		leadingChar := expression[0:1]
 		if leadingChar == "(" {
@@ -121,6 +125,42 @@ func parseExpression (expression string) (complex128) {
 }
 
 func main() {
-	var expression string = "j^i"
-	fmt.Println(parseExpression(expression));
+	fmt.Println("Starting server on port 8000")
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8000", nil)
+	// var expression string = "j^i"
+	// fmt.Println(parseExpression(expression));
 }
+
+func handler(w http.ResponseWriter, r*http.Request) {
+	io.WriteString(w, "Here is the answer: \n")
+	expression := r.URL.Path
+	if expression != "/favicon.ico" {
+		if len(expression) > 1 {
+			fmt.Println("line 139")
+			expression = expression[1:]
+			fmt.Println(expression)
+			result := parseExpression(expression)
+			fmt.Println(result)
+			realPart := strconv.FormatFloat(real(result), 'f', -1, 64)
+			imagPart := strconv.FormatFloat(imag(result), 'f', -1, 64)
+			resultString := realPart + " + " + imagPart + "i"
+			io.WriteString(w, resultString)
+		}
+	}
+}
+
+	// keys, ok := r.URL.Query()["key"]
+	// if !ok || len(keys[0]) < 1 {
+		// log.Println("Url Param 'key' is missing")
+		// return
+	// }
+	// Query()["key"] will return an array of items,
+	// we only want the single item.
+	// key := keys[0]
+	// fmt.Println("line 146")
+	// fmt.Println(key)
+	// result := parseExpression(key)
+	// fmt.Println("line 148")
+	// fmt.Println(result)
+	// log.Println("Value of expression is: " + string(real(result)))

@@ -4,4 +4,5 @@ unary operations: See https://pkg.go.dev/math/cmplx
 
 Instructions:
 - Use i or j or both.
-- 
+- Avoid any "special" characters?
+- Avoid spaces.
