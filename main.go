@@ -31,8 +31,9 @@ func calculate(z1 complex128, op string, z2 complex128) complex128 {
 }
 
 func parseExpression (expression string) (complex128) {
-	fmt.Println("line 34")
+	// fmt.Println("line 34 says that expression = ", expression)
 	getNumber := func(expression string) (complex128, string){
+		// fmt.Println("line 36 says that expression = ", expression)
 		leadingChar := expression[0:1]
 		if leadingChar == "(" {
 			nExpression := 0
@@ -48,8 +49,10 @@ func parseExpression (expression string) (complex128) {
 			}
 			return parseExpression(expression[1: nExpression]), expression[nExpression + 1:]
 		} else if leadingChar == "i" || leadingChar == "j" {
+			// fmt.Println("line 52 says that expression = ", expression)
 			return complex(0, 1), expression[1:]
 		} else {
+			// fmt.Println("line 55 says that expression = ", expression)
 			p := 1
 			lastNum := complex(0., 0.)
 			for len(expression) >= p {
@@ -83,12 +86,13 @@ func parseExpression (expression string) (complex128) {
 	z := complex(0., 0.)
 	z, expression = getNumber(expression)
 	precedence := map[string]int{"+": 0, "-": 0, "*": 1, "/": 1, "^": 2}
-	ops := "+-*^"
+	ops := "+-*/^"
 	pairs := []opNum{}
 	num := complex(0., 0.)
 	for len(expression) > 0 {
 		op := expression[0:1]
 		if strings.Contains(ops, op) {
+			// fmt.Println("line 95")
 			expression = expression[1:]
 		} else {
 			op = "*"
@@ -125,11 +129,11 @@ func parseExpression (expression string) (complex128) {
 }
 
 func main() {
-	fmt.Println("Starting server on port 8000")
-	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8000", nil)
-	// var expression string = "j^i"
-	// fmt.Println(parseExpression(expression));
+	// fmt.Println("Starting server on port 8000")
+	// http.HandleFunc("/", handler)
+	// http.ListenAndServe(":8000", nil)
+	var expression string = "1+2i/(3-4j/(5+6j))"
+	fmt.Println(parseExpression(expression));
 }
 
 func handler(w http.ResponseWriter, r*http.Request) {
@@ -137,11 +141,11 @@ func handler(w http.ResponseWriter, r*http.Request) {
 	expression := r.URL.Path
 	if expression != "/favicon.ico" {
 		if len(expression) > 1 {
-			fmt.Println("line 139")
+			// fmt.Println("line 139")
 			expression = expression[1:]
-			fmt.Println(expression)
+			// fmt.Println(expression)
 			result := parseExpression(expression)
-			fmt.Println(result)
+			// fmt.Println(result)
 			realPart := strconv.FormatFloat(real(result), 'f', -1, 64)
 			imagPart := strconv.FormatFloat(imag(result), 'f', -1, 64)
 			resultString := realPart + " + " + imagPart + "i"
