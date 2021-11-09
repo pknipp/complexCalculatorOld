@@ -29,7 +29,6 @@ func calculate(z1 complex128, op string, z2 complex128) complex128 {
 
 func parseExpression (expression string) (complex128) {
 	getNumber := func(expression string) (complex128, string){
-		fmt.Println(expression)
 		leadingChar := expression[0:1]
 		if leadingChar == "(" {
 			nExpression := 0
@@ -80,7 +79,7 @@ func parseExpression (expression string) (complex128) {
 	z := complex(0., 0.)
 	z, expression = getNumber(expression)
 	precedence := map[string]int{"+": 0, "-": 0, "*": 1, "/": 1, "^": 2}
-	ops := "+-*^"
+	ops := "+-*/^"
 	pairs := []opNum{}
 	num := complex(0., 0.)
 	for len(expression) > 0 {
@@ -122,6 +121,6 @@ func parseExpression (expression string) (complex128) {
 }
 
 func main() {
-	var expression string = "1+2i-3/j^5"
+	var expression string = "i^j"
 	fmt.Println(parseExpression(expression));
 }
